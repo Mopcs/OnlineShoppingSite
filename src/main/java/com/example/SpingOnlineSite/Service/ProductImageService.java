@@ -30,6 +30,10 @@ public class ProductImageService {
                 .orElseThrow(() -> new ResourceNotFoundException("Изображение продукта не найдено по id: " + imageId));
     }
 
+    public List<ProductImage> getAllProductImagesByProductId(int productId) {
+        return productImageRepository.findByProductId(productId);
+    }
+
     public ProductImage createProductImage(int productId, ProductImage productImage) {
         Product product = productService.getProductById(productId);
 

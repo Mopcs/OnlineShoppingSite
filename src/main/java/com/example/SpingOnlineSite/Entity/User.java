@@ -1,9 +1,9 @@
 package com.example.SpingOnlineSite.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     @Column(name = "user_id")
     private int userId;
 
@@ -32,15 +33,21 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @JsonIgnore
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @NotBlank(message = "Surname is required")
     @Column(name = "surname")
     private String surname;
+
+    @NotBlank(message = "Patronymic is required")
+    @Column(name = "patronymic")
+    private String patronymic;
 
     @NotBlank(message = "Gender is required")
     @Column(name = "gender")
@@ -65,6 +72,8 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public void setPatronymic(String patronymic) { this.patronymic = patronymic;}
 
     public void setEmail(String email) {
         this.email = email;

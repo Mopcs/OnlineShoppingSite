@@ -4,10 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum OrderStatus {
-    NEW("Новый"),
-    PROCESSING("Обрабатывается"),
-    COMPLETED("Завершен"),
-    CANCELED("Отменен");
+    PENDING("Обрабатывается"),
+    ACCEPTED("Принят"),
+    REJECTED("Отклонен");
 
     private final String displayName;
 

@@ -3,15 +3,13 @@ package com.example.SpingOnlineSite.Service;
 import com.example.SpingOnlineSite.Entity.User;
 import com.example.SpingOnlineSite.Repository.UserRepository;
 import com.example.SpingOnlineSite.Request.LoginRequest;
-import lombok.AllArgsConstructor;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,8 +35,6 @@ public class UserService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())
-                // Добавьте роли, если они у вас есть
-                // .roles("ROLE_USER")
                 .build();
     }
 

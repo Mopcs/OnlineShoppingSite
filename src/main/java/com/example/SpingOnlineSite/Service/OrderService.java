@@ -34,23 +34,60 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Заказ не найден по id: " + orderId));
     }
 
-    public Order createOrder(Order order, String productName) {
-        Product product = productRepository.findByName(productName)
-                .orElseThrow(() -> new ResourceNotFoundException("Продукт не найден по имени: " + productName));
+    public Order createOrder(Order order, int productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Продукт не найден по имени: " + productId));
 
         order.setUserId(product.getUserId());
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus(OrderStatus.NEW);
-        order.setProduct(product);
+        order.setStatus(OrderStatus.PENDING);
+        order.setProductId(productId);
 
         return orderRepository.save(order);
+    }
+
+    /*public Order createOrder(Order order) {
+
+        order.setUserId(order.getProduct().getUserId());
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(OrderStatus.PENDING);
+        order.setProduct(order.getProduct());
+
+        return orderRepository.save(order);
+    }*/
+
+    /*public Order createOrderWithProduct(Order order) {
+
+        order.setUserId(order.getUserId());
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(OrderStatus.PENDING);
+        order.setProduct(order.getProduct());
+
+        return orderRepository.save(order);
+    }*/
+
+    public void approveOrder(int orderId) {
+        Order order = getOrderById(orderId);
+        order.setStatus(OrderStatus.ACCEPTED);
+        orderRepository.save(order);
+    }
+
+    public void rejectOrder(int orderId) {
+        Order order = getOrderById(orderId);
+        order.setStatus(OrderStatus.REJECTED);
+        orderRepository.save(order);
+        deleteOrder(orderId);
+    }
+
+    public List<Order> getOrdersByStatus(OrderStatus status) {
+        return orderRepository.findByStatus(status);
     }
 
     public Order updateOrder(int orderId, Order order) {
         Order existingOrder = getOrderById(orderId);
 
         existingOrder.setUserId(order.getUserId());
-        existingOrder.setProduct(order.getProduct());
+        existingOrder.setProductId(order.getProductId());
         existingOrder.setOrderDate(order.getOrderDate());
         existingOrder.setStatus(order.getStatus());
 

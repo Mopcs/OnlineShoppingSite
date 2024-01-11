@@ -28,6 +28,12 @@ public class ProductImageController {
         return productImageService.getProductImageById(imageId);
     }
 
+    @GetMapping("/getAllProductImagesByProductId/productId={productId}")
+    public List<ProductImage> getAllProductImagesByProductId(@PathVariable int productId)
+    {
+        return productImageService.getAllProductImagesByProductId(productId);
+    }
+
     @PostMapping("/createProductImage/productId={productId}")
     public ProductImage createProductImage(@PathVariable int productId,@RequestBody ProductImage productImage) {
         return productImageService.createProductImage(productId, productImage);

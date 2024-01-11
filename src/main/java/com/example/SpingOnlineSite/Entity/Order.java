@@ -1,5 +1,6 @@
 package com.example.SpingOnlineSite.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -18,10 +19,10 @@ public class Order {
     @JoinColumn(name = "user_id")
     private int userId;
 
-    @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private int productId;
 
+    @JsonIgnore
     @Column(name = "order_date")
     private LocalDateTime orderDate;
 
@@ -37,8 +38,8 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public void setOrderDate(LocalDateTime orderDate) {
