@@ -1,15 +1,14 @@
 package com.example.SpingOnlineSite.Controller;
 
-import com.example.SpingOnlineSite.Entity.*;
+import com.example.SpingOnlineSite.Entity.Cart;
+import com.example.SpingOnlineSite.Entity.CartItem;
+import com.example.SpingOnlineSite.Entity.Product;
 import com.example.SpingOnlineSite.Service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The type Cart controller.
@@ -41,11 +40,24 @@ public class CartController {
         return cartService.getAllItemsInCart();
     }
 
+    /**
+     * Add item to cart cart item.
+     *
+     * @param cartId    the cart id
+     * @param productId the product id
+     * @return the cart item
+     */
     @PostMapping("/add/cartId={cartId}/productId={productId}")
     public CartItem addItemToCart(@PathVariable int cartId, @PathVariable int productId) {
        return cartService.addItemToCart(cartId, productId);
     }
 
+    /**
+     * Create cart cart.
+     *
+     * @param userId the user id
+     * @return the cart
+     */
     @PostMapping("/create/userId={userId}")
     public Cart createCart(@PathVariable int userId)
     {
@@ -53,12 +65,24 @@ public class CartController {
     }
 
 
+    /**
+     * Gets products in cart.
+     *
+     * @param userId the user id
+     * @return the products in cart
+     */
     @PostMapping("/getProductsInCart/userId={userId}")
     public List<Product> getProductsInCart(@PathVariable int userId)
     {
         return cartService.getProductsInCart(userId);
     }
 
+    /**
+     * Gets total cost.
+     *
+     * @param cartId the cart id
+     * @return the total cost
+     */
     @PostMapping("/getTotalCost/cartId={cartId}")
     public BigDecimal getTotalCost(@PathVariable int cartId)
     {

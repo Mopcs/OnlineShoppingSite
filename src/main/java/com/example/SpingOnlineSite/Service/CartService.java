@@ -14,12 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Cart service.
+ */
 @Service
 public class CartService {
     private final CartRepository cartRepository;
     private final ProductService productService;
     private final CartItemsRepository cartItemsRepository;
 
+    /**
+     * Instantiates a new Cart service.
+     *
+     * @param cartRepository      the cart repository
+     * @param productService      the product service
+     * @param cartItemsRepository the cart items repository
+     */
     @Autowired
     public CartService(CartRepository cartRepository, ProductService productService, CartItemsRepository cartItemsRepository) {
         this.cartRepository = cartRepository;
@@ -27,10 +37,22 @@ public class CartService {
         this.cartItemsRepository = cartItemsRepository;
     }
 
+    /**
+     * Gets all items in cart.
+     *
+     * @return the all items in cart
+     */
     public List<Cart> getAllItemsInCart() {
         return cartRepository.findAll();
     }
 
+    /**
+     * Add item to cart cart item.
+     *
+     * @param cartId    the cart id
+     * @param productId the product id
+     * @return the cart item
+     */
     public CartItem addItemToCart(int cartId, int productId) {
         Cart cart = cartRepository.findCartByCartId(cartId);
 
@@ -46,6 +68,12 @@ public class CartService {
         return cartItemsRepository.save(cartItem);
     }
 
+    /**
+     * Gets products in cart.
+     *
+     * @param userId the user id
+     * @return the products in cart
+     */
     public List<Product> getProductsInCart(int userId) {
         Cart cart = getOrCreateCart(userId);
         List<Product> productsInCart = new ArrayList<>();
@@ -65,6 +93,12 @@ public class CartService {
     }
 
 
+    /**
+     * Calculate total big decimal.
+     *
+     * @param cartId the cart id
+     * @return the big decimal
+     */
     public BigDecimal calculateTotal(int cartId) {
         Cart cart = cartRepository.findCartByCartId(cartId);
         List<CartItem> cartItems = cartItemsRepository.findAllByCartId(cart.getCartId());
@@ -84,11 +118,21 @@ public class CartService {
         return total;
     }
 
+    /**
+     * Remove from cart.
+     *
+     * @param cartItemId the cart item id
+     */
     public void removeFromCart(int cartItemId) {
-        // Удаляем элемент корзины по его идентификатору
         cartRepository.deleteById(cartItemId);
     }
 
+    /**
+     * Gets or create cart.
+     *
+     * @param userId the user id
+     * @return the or create cart
+     */
     public Cart getOrCreateCart(int userId) {
         Optional<Cart> cart = cartRepository.findByUserId(userId);
         return cart.orElseGet(() -> {

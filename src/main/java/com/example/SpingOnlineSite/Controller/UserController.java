@@ -117,6 +117,12 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    /**
+     * Gets user id by phone number.
+     *
+     * @param phoneNumber the phone number
+     * @return the user id by phone number
+     */
     @PostMapping("/getUserIdByPhoneNumber/phoneNumber={phoneNumber}")
     public ResponseEntity<Map<String, Integer>> getUserIdByPhoneNumber(@PathVariable String phoneNumber) {
         Integer userId = userService.getUserIdByPhoneNumber(phoneNumber);
@@ -127,6 +133,12 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Gets user by phone number.
+     *
+     * @param phoneNumber the phone number
+     * @return the user by phone number
+     */
     @GetMapping("/getUserByPhoneNumber/phoneNumber={phoneNumber}")
     public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber)
     {

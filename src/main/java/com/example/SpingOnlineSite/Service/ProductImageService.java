@@ -20,31 +20,65 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The type Product image service.
+ */
 @Service
 public class ProductImageService {
 
     private final ProductImageRepository productImageRepository;
     private final ProductService productService;
 
+    /**
+     * Instantiates a new Product image service.
+     *
+     * @param productImageRepository the product image repository
+     * @param productService         the product service
+     */
     @Autowired
     public ProductImageService(ProductImageRepository productImageRepository, ProductService productService) {
         this.productImageRepository = productImageRepository;
         this.productService = productService;
     }
 
+    /**
+     * Gets all product images.
+     *
+     * @return the all product images
+     */
     public List<ProductImage> getAllProductImages() {
         return productImageRepository.findAll();
     }
 
+    /**
+     * Gets product image by id.
+     *
+     * @param imageId the image id
+     * @return the product image by id
+     */
     public ProductImage getProductImageById(int imageId) {
         return productImageRepository.findById(imageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Изображение продукта не найдено по id: " + imageId));
     }
 
+    /**
+     * Gets all product images by product id.
+     *
+     * @param productId the product id
+     * @return the all product images by product id
+     */
     public List<ProductImage> getAllProductImagesByProductId(int productId) {
         return productImageRepository.findByProductId(productId);
     }
 
+    /**
+     * Create product images list.
+     *
+     * @param productId the product id
+     * @param files     the files
+     * @return the list
+     * @throws IOException the io exception
+     */
     public List<ProductImage> createProductImages(int productId, List<MultipartFile> files) throws IOException {
         Product product = productService.getProductById(productId);
 
@@ -69,6 +103,13 @@ public class ProductImageService {
         return createdImages;
     }
 
+    /**
+     * Save image.
+     *
+     * @param file     the file
+     * @param fileName the file name
+     * @throws IOException the io exception
+     */
     public void saveImage(MultipartFile file, String fileName) throws IOException {
         String resourcesDirectory = "C:\\Users\\baron\\OneDrive\\Рабочий стол\\SpingOnlineSite\\src\\main\\resources\\Images\\products";
 
@@ -81,6 +122,13 @@ public class ProductImageService {
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
     }
 
+    /**
+     * Gets first product image by product id.
+     *
+     * @param productId the product id
+     * @return the first product image by product id
+     * @throws IOException the io exception
+     */
     public ResponseEntity<byte[]> getFirstProductImageByProductId(int productId) throws IOException {
         List<ProductImage> productImages = getAllProductImagesByProductId(productId);
 
@@ -100,37 +148,44 @@ public class ProductImageService {
         }
     }
 
+    /**
+     * Gets all product images.
+     *
+     * @param productId the product id
+     * @return the all product images
+     * @throws IOException the io exception
+     */
     public ResponseEntity<List<byte[]>> getAllProductImages(int productId) throws IOException {
         List<ProductImage> productImages = getAllProductImagesByProductId(productId);
         List<byte[]> imageBytesList = new ArrayList<>();
 
         for (ProductImage productImage : productImages) {
-            // Получаем путь к изображению
             String imagePath = "C:\\Users\\baron\\OneDrive\\Рабочий стол\\SpingOnlineSite\\src\\main\\resources\\" + productImage.getImagePath();
 
-            // Чтение байтов изображения
             Path path = Paths.get(imagePath);
 
-            // Проверяем, существует ли файл по указанному пути
             if (Files.exists(path)) {
                 byte[] imageBytes = Files.readAllBytes(path);
                 imageBytesList.add(imageBytes);
             } else {
-                // Если файл не существует, можно обработать этот случай или просто пропустить
-                // В данном случае добавим null в список, чтобы показать, что изображение отсутствует
                 imageBytesList.add(null);
             }
         }
 
-        // Проверяем, что список не пустой
         if (!imageBytesList.isEmpty()) {
             return new ResponseEntity<>(imageBytesList, HttpStatus.OK);
         } else {
-            // Возвращаем статус NOT_FOUND, если список пустой
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
+    /**
+     * Update product image product image.
+     *
+     * @param imageId      the image id
+     * @param productImage the product image
+     * @return the product image
+     */
     public ProductImage updateProductImage(int imageId, ProductImage productImage) {
         ProductImage existingImage = getProductImageById(imageId);
 
@@ -139,6 +194,11 @@ public class ProductImageService {
         return productImageRepository.save(existingImage);
     }
 
+    /**
+     * Delete product image.
+     *
+     * @param imageId the image id
+     */
     public void deleteProductImage(int imageId) {
         getProductImageById(imageId);
 
