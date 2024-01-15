@@ -44,14 +44,22 @@ public class UserService implements UserDetailsService {
     }
 
     public User registerUser(User user) {
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-
-        return userRepository.save(user);
+        if (!findEmail(user.getEmail())) {
+            if (!findPhoneNumber(user.getPhoneNumber())) {
+                user.setCreatedAt(LocalDateTime.now());
+                user.setUpdatedAt(LocalDateTime.now());
+                return userRepository.save(user);
+            } else {
+                throw new IllegalArgumentException("Пользователь с таким номером телефона уже существует.");
+            }
+        } else {
+            throw new IllegalArgumentException("Пользователь с такой электронной почтой уже существует.");
+        }
     }
 
-    public Optional<User>loginUser(LoginRequest request) {
-        return userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
+
+    public Optional<User> loginUser(LoginRequest request) {
+        return userRepository.findByPhoneNumberAndPassword(request.getPhoneNumber(), request.getPassword());
     }
     public User updateUser(int userId, User user) {
         User existingUser = getUserById(userId);
@@ -64,11 +72,26 @@ public class UserService implements UserDetailsService {
         return userRepository.save(existingUser);
     }
 
+    public boolean findPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber).isPresent();
+    }
+
+    public boolean findEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public Integer getUserIdByPhoneNumber(String phoneNumber) {
+        Optional<User> user = findByPhoneNumber(phoneNumber);
+        return user.get().getUserId();
+    }
+
     public void deleteUser(int userId) {
         getUserById(userId);
 
         userRepository.deleteById(userId);
     }
+
+    public Optional<User> findByPhoneNumber(String phoneNumber) { return  userRepository.findByPhoneNumber(phoneNumber);}
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);

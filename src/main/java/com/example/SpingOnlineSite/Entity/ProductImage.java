@@ -3,6 +3,7 @@ package com.example.SpingOnlineSite.Entity;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.io.File;
 
 @Getter
 @Entity
@@ -18,23 +19,18 @@ public class ProductImage {
     @JoinColumn(name = "product_id")
     private int productId;
 
+
     @Column(name = "image_path")
     private String imagePath;
 
-    @Column(name = "description")
-    private String description;
+
 
     public void setImageId(int imageId) {
         this.imageId = imageId;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath;}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public void setProductId(int productId) {
         this.productId = productId;

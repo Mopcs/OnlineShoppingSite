@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/orders")
 public class OrderController {
 
@@ -50,7 +51,7 @@ public class OrderController {
         return orderService.getOrdersByStatus(OrderStatus.REJECTED);
     }
 
-    @GetMapping("/getOrderById/orderId={orderId}")
+    @PostMapping("/getOrderById/orderId={orderId}")
     public Order getOrderById(@PathVariable int orderId) {
         return orderService.getOrderById(orderId);
     }

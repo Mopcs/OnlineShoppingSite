@@ -3,6 +3,7 @@ package com.example.SpingOnlineSite.Controller;
 import com.example.SpingOnlineSite.Entity.Product;
 import com.example.SpingOnlineSite.Service.ProductService;
 import com.example.SpingOnlineSite.Service.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/products")
 public class ProductController {
 
@@ -21,12 +23,12 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/getAllProducts")
+    @PostMapping("/getAllProducts")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/getProductById/productId={productId}")
+    @PostMapping("/getProductById/productId={productId}")
     public Product getProductById(@PathVariable int productId) {
         return productService.getProductById(productId);
     }
@@ -34,6 +36,13 @@ public class ProductController {
     @PostMapping("/createProduct/userId={userId}")
     public Product createProduct(@RequestBody Product product, @PathVariable int userId) {
         return productService.createProduct(product, userId);
+    }
+
+    @PostMapping("/getProductIdByUserId/userId={userId}")
+    public ResponseEntity<Integer> findProductIdByUserId(@PathVariable int userId)
+    {
+        Integer productId = productService.getProductIdByUserId(userId);
+        return ResponseEntity.ok(productId);
     }
 
     @PutMapping("/updateProduct/productId={productId}")

@@ -39,11 +39,7 @@ public class Product {
     private String category;
 
     @JoinColumn(name = "user_id")
-    private int user_id;
-
-    public int getUserId() {
-        return user_id;
-    }
+    private int userId;
 
     public void setSize(String size) {
         this.size = size;
@@ -66,7 +62,7 @@ public class Product {
     }
 
     public void setUserId(int user_id) {
-        this.user_id = user_id;
+        this.userId = user_id;
     }
 
     public void setProductId(int productId) {

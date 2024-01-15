@@ -56,6 +56,12 @@ public class ProductService {
         return productRepository.save(existingProduct);
     }
 
+    public Integer getProductIdByUserId(int userId)
+    {
+        return productRepository.findProductIdByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Такого продукта нет"));
+    }
+
     public void deleteProduct(int productId) {
         getProductById(productId);
 

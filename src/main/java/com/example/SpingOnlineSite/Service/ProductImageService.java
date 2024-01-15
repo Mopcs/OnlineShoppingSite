@@ -5,9 +5,20 @@ import com.example.SpingOnlineSite.Entity.ProductImage;
 import com.example.SpingOnlineSite.Repository.ProductImageRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductImageService {
@@ -34,25 +45,96 @@ public class ProductImageService {
         return productImageRepository.findByProductId(productId);
     }
 
-    public ProductImage createProductImage(int productId, ProductImage productImage) {
+    public List<ProductImage> createProductImages(int productId, List<MultipartFile> files) throws IOException {
         Product product = productService.getProductById(productId);
 
         if (product == null) {
             throw new ResourceNotFoundException("Продукт не найден по id: " + productId);
         }
 
-        productImage.setProductId(productId);
-        productImage.setImagePath(productImage.getImagePath());
-        productImage.setDescription(productImage.getDescription());
+        List<ProductImage> createdImages = new ArrayList<>();
 
-        return productImageRepository.save(productImage);
+        for (MultipartFile file : files) {
+            String fileName = UUID.randomUUID() + ".jpg";
+
+            saveImage(file, fileName);
+
+            ProductImage productImage = new ProductImage();
+            productImage.setProductId(productId);
+            productImage.setImagePath("Images/products/" + fileName);
+
+            createdImages.add(productImageRepository.save(productImage));
+        }
+
+        return createdImages;
+    }
+
+    public void saveImage(MultipartFile file, String fileName) throws IOException {
+        String resourcesDirectory = "C:\\Users\\baron\\OneDrive\\Рабочий стол\\SpingOnlineSite\\src\\main\\resources\\Images\\products";
+
+        Path directory = Paths.get(resourcesDirectory);
+
+        Files.createDirectories(directory);
+
+        Path filePath = directory.resolve(fileName);
+
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    public ResponseEntity<byte[]> getFirstProductImageByProductId(int productId) throws IOException {
+        List<ProductImage> productImages = getAllProductImagesByProductId(productId);
+
+        if (!productImages.isEmpty()) {
+            ProductImage firstImage = productImages.get(0);
+
+            String imagePath = "C:\\Users\\baron\\OneDrive\\Рабочий стол\\SpingOnlineSite\\src\\main\\resources\\" + firstImage.getImagePath();
+
+            Path path = Paths.get(imagePath);
+            byte[] imageBytes = Files.readAllBytes(path);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(imageBytes);
+        } else {
+            throw new ResourceNotFoundException("У продукта с id " + productId + " нет изображений");
+        }
+    }
+
+    public ResponseEntity<List<byte[]>> getAllProductImages(int productId) throws IOException {
+        List<ProductImage> productImages = getAllProductImagesByProductId(productId);
+        List<byte[]> imageBytesList = new ArrayList<>();
+
+        for (ProductImage productImage : productImages) {
+            // Получаем путь к изображению
+            String imagePath = "C:\\Users\\baron\\OneDrive\\Рабочий стол\\SpingOnlineSite\\src\\main\\resources\\" + productImage.getImagePath();
+
+            // Чтение байтов изображения
+            Path path = Paths.get(imagePath);
+
+            // Проверяем, существует ли файл по указанному пути
+            if (Files.exists(path)) {
+                byte[] imageBytes = Files.readAllBytes(path);
+                imageBytesList.add(imageBytes);
+            } else {
+                // Если файл не существует, можно обработать этот случай или просто пропустить
+                // В данном случае добавим null в список, чтобы показать, что изображение отсутствует
+                imageBytesList.add(null);
+            }
+        }
+
+        // Проверяем, что список не пустой
+        if (!imageBytesList.isEmpty()) {
+            return new ResponseEntity<>(imageBytesList, HttpStatus.OK);
+        } else {
+            // Возвращаем статус NOT_FOUND, если список пустой
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     public ProductImage updateProductImage(int imageId, ProductImage productImage) {
         ProductImage existingImage = getProductImageById(imageId);
 
         existingImage.setImagePath(productImage.getImagePath());
-        existingImage.setDescription(productImage.getDescription());
 
         return productImageRepository.save(existingImage);
     }

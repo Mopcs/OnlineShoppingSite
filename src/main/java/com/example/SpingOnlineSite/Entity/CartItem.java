@@ -1,10 +1,12 @@
 package com.example.SpingOnlineSite.Entity;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "cart_items")
 public class CartItem {
@@ -13,13 +15,11 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private int id;
 
-    @ManyToOne
     @JoinColumn(name = "cart_id")
-    private Cart cart;
+    private int cartId;
 
-    @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product;
+    private int productId;
 
     @Column(name = "quantity")
     private int quantity;
@@ -28,12 +28,9 @@ public class CartItem {
         this.id = id;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
     public void setQuantity(int quantity) {

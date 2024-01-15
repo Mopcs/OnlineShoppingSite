@@ -1,8 +1,6 @@
 package com.example.SpingOnlineSite.Controller;
 
-import com.example.SpingOnlineSite.Entity.Cart;
-import com.example.SpingOnlineSite.Entity.CartItem;
-import com.example.SpingOnlineSite.Entity.User;
+import com.example.SpingOnlineSite.Entity.*;
 import com.example.SpingOnlineSite.Service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,37 +11,74 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * The type Cart controller.
+ */
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/cart")
 public class CartController {
     private final CartService cartService;
 
+
+    /**
+     * Instantiates a new Cart controller.
+     *
+     * @param cartService the cart service
+     */
     @Autowired
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
 
-    @GetMapping
+    /**
+     * Gets all items in cart.
+     *
+     * @return the all items in cart
+     */
+    @PostMapping
     public List<Cart> getAllItemsInCart() {
         return cartService.getAllItemsInCart();
     }
 
-    @PostMapping("/add/userId={userId}/productId={productId}")
-    public void addItemToCart(@PathVariable int userId, @PathVariable int productId, @RequestBody CartItem cartItem) {
-        //cartItem.setQuantity(cartItem.getQuantity());
-        cartService.addItemToCart(userId, productId, cartItem.getQuantity());
+    @PostMapping("/add/cartId={cartId}/productId={productId}")
+    public CartItem addItemToCart(@PathVariable int cartId, @PathVariable int productId) {
+       return cartService.addItemToCart(cartId, productId);
     }
 
-    @GetMapping("/total")
-    public String showTotal(Model model, Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        Optional<Cart> cart = cartService.getCartByUserId(user.getUserId());
-        BigDecimal total = cartService.calculateTotal(cart);
-        model.addAttribute("total", total);
-
-        return "cart/total";
+    @PostMapping("/create/userId={userId}")
+    public Cart createCart(@PathVariable int userId)
+    {
+        return cartService.getOrCreateCart(userId);
     }
 
+
+    @PostMapping("/getProductsInCart/userId={userId}")
+    public List<Product> getProductsInCart(@PathVariable int userId)
+    {
+        return cartService.getProductsInCart(userId);
+    }
+
+    @PostMapping("/getTotalCost/cartId={cartId}")
+    public BigDecimal getTotalCost(@PathVariable int cartId)
+    {
+        return cartService.calculateTotal(cartId);
+    }
+
+
+    /**
+     * Show total string.
+     *
+     * @param model          the model
+     * @param authentication the authentication
+     * @return the string
+     */
+
+    /**
+     * Remove from cart.
+     *
+     * @param cartId the cart id
+     */
     @DeleteMapping("/remove/cartId={cartId}")
     public void removeFromCart(@PathVariable int cartId) {
         cartService.removeFromCart(cartId);
