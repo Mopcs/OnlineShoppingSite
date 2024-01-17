@@ -105,9 +105,14 @@ public class ProductController {
      * @param productName the product name
      * @return the response entity
      */
-    @GetMapping("/findProductByName/productName={productName}")
-    public ResponseEntity<Product> findProductByName(@PathVariable String productName) {
-        Optional<Product> product = productService.findProductByName(productName);
-        return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/findProductsByName/productName={productName}")
+    public List<Product> findProductByName(@PathVariable String productName) {
+        return productService.findProductByName(productName);
+    }
+
+    @GetMapping("/findProductsByGender/gender={gender}")
+    public List<Product> findProductsByGender(@PathVariable String gender)
+    {
+        return productService.getProductsByGender(gender);
     }
 }

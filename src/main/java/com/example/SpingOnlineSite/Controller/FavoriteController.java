@@ -1,6 +1,8 @@
 package com.example.SpingOnlineSite.Controller;
 
 import com.example.SpingOnlineSite.Entity.Favorite;
+import com.example.SpingOnlineSite.Entity.Product;
+import com.example.SpingOnlineSite.Entity.ProductImage;
 import com.example.SpingOnlineSite.Service.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type Favorite controller.
@@ -35,8 +38,8 @@ public class FavoriteController {
      * @return the favorites by user id
      */
     @PostMapping("/getFavorites/userId={userId}")
-    public List<Favorite> getFavoritesByUserId(@PathVariable int userId) {
-        return favoriteService.getFavoritesByUserId(userId);
+    public List<Product> getFavoritesByUserId(@PathVariable int userId) {
+        return favoriteService.getFavoritesProductsByUserId(userId);
     }
 
     /**

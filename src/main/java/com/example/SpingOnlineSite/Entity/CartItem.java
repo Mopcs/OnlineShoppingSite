@@ -18,8 +18,8 @@ public class CartItem {
     @Column(name = "cart_item_id")
     private int id;
 
-    @JoinColumn(name = "cart_id")
-    private int cartId;
+    @Column(name = "user_id")
+    private int userId;
 
     @JoinColumn(name = "product_id")
     private int productId;

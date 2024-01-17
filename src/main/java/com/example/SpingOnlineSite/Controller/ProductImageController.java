@@ -71,9 +71,21 @@ public class ProductImageController {
      * @return the first image
      * @throws IOException the io exception
      */
-    @PostMapping("/getFirstImage/productId={productId}")
+    @GetMapping("/getFirstImage/productId={productId}")
     public  ResponseEntity<byte[]> getFirstImage(@PathVariable int productId) throws IOException {
         return productImageService.getFirstProductImageByProductId(productId);
+    }
+
+
+    @GetMapping("/getFirstProductImage/productId={productId}")
+    public String getFirstProductImage(@PathVariable int productId) {
+        return  productImageService.getFirstProductImageUrlByProductId(productId);
+    }
+
+    @GetMapping("/getAllProductImagesURL/productId={productId}")
+    public List<String> getAllProductImageUrls(@PathVariable int productId)
+    {
+        return productImageService.getAllProductImageUrlsByProductId(productId);
     }
 
     /**
@@ -83,7 +95,7 @@ public class ProductImageController {
      * @return the all
      * @throws IOException the io exception
      */
-    @PostMapping("/getAllProductImages/productId={productId}")
+    @GetMapping("/getAllProductImages/productId={productId}")
     public ResponseEntity<List<byte[]>> getAll(@PathVariable int productId) throws IOException {
         return productImageService.getAllProductImages(productId);
     }

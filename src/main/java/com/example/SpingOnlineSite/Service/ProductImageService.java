@@ -5,6 +5,7 @@ import com.example.SpingOnlineSite.Entity.ProductImage;
 import com.example.SpingOnlineSite.Repository.ProductImageRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -103,6 +105,7 @@ public class ProductImageService {
         return createdImages;
     }
 
+
     /**
      * Save image.
      *
@@ -177,6 +180,33 @@ public class ProductImageService {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    public String getFirstProductImageUrlByProductId(int productId) {
+        List<ProductImage> productImages = getAllProductImagesByProductId(productId);
+
+        if (!productImages.isEmpty()) {
+            ProductImage firstImage = productImages.get(0);
+            return getResourceImageUrl(firstImage.getImagePath());
+        } else {
+            throw new ResourceNotFoundException("У продукта с id " + productId + " нет изображений");
+        }
+    }
+
+    public List<String> getAllProductImageUrlsByProductId(int productId) {
+        List<ProductImage> productImages = getAllProductImagesByProductId(productId);
+        List<String> imageUrls = new ArrayList<>();
+
+        for (ProductImage productImage : productImages) {
+            String imageUrl = getResourceImageUrl(productImage.getImagePath());
+            imageUrls.add(imageUrl);
+        }
+
+        return imageUrls;
+    }
+
+    private String getResourceImageUrl(String imagePath) {
+        return "/"+imagePath;
     }
 
     /**

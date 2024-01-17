@@ -4,6 +4,7 @@ import com.example.SpingOnlineSite.Entity.Product;
 import com.example.SpingOnlineSite.Entity.User;
 import com.example.SpingOnlineSite.Repository.ProductRepository;
 import com.example.SpingOnlineSite.Repository.UserRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final JPAQueryFactory queryFactory;
     private final UserRepository userRepository;
 
     /**
@@ -28,9 +30,10 @@ public class ProductService {
      * @param userRepository    the user repository
      */
     @Autowired
-    public ProductService(ProductRepository productRepository, UserRepository userRepository) {
+    public ProductService(ProductRepository productRepository, UserRepository userRepository, JPAQueryFactory queryFactory) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.queryFactory = queryFactory;
     }
 
     /**
@@ -113,13 +116,17 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
+    public List<Product> getProductsByGender(String gender) {
+        return productRepository.findByGender(gender);
+    }
+
     /**
      * Find product by name optional.
      *
      * @param name the name
      * @return the optional
      */
-    public Optional<Product> findProductByName(String name) {
+    public List<Product> findProductByName(String name) {
         return productRepository.findByName(name);
     }
 }

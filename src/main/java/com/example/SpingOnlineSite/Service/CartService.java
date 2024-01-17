@@ -53,17 +53,10 @@ public class CartService {
      * @param productId the product id
      * @return the cart item
      */
-    public CartItem addItemToCart(int cartId, int productId) {
-        Cart cart = cartRepository.findCartByCartId(cartId);
-
-        Product product = productService.getProductById(productId);
-        if (product == null) {
-            throw new ResourceNotFoundException("Продукт не найден по id: " + productId);
-        }
-
+    public CartItem addItemToCart(int userId, int productId) {
         CartItem cartItem = new CartItem();
-        cartItem.setCartId(cart.getCartId());
-        cartItem.setProductId(product.getProductId());
+        cartItem.setUserId(userId);
+        cartItem.setProductId(productId);
 
         return cartItemsRepository.save(cartItem);
     }
@@ -75,15 +68,17 @@ public class CartService {
      * @return the products in cart
      */
     public List<Product> getProductsInCart(int userId) {
-        Cart cart = getOrCreateCart(userId);
         List<Product> productsInCart = new ArrayList<>();
 
-        List<CartItem> cartItems = cartItemsRepository.findAllByCartId(cart.getCartId());
+        // Получаем все элементы корзины для указанного пользователя
+        List<CartItem> cartItems = cartItemsRepository.findAllByUserId(userId);
 
+        // Обходим каждый элемент корзины и получаем соответствующий продукт
         for (CartItem cartItem : cartItems) {
             int productId = cartItem.getProductId();
             Product product = productService.getProductById(productId);
 
+            // Если продукт существует, добавляем его в список
             if (product != null) {
                 productsInCart.add(product);
             }
@@ -99,10 +94,8 @@ public class CartService {
      * @param cartId the cart id
      * @return the big decimal
      */
-    public BigDecimal calculateTotal(int cartId) {
-        Cart cart = cartRepository.findCartByCartId(cartId);
-        List<CartItem> cartItems = cartItemsRepository.findAllByCartId(cart.getCartId());
-
+    public BigDecimal calculateTotal(int userId) {
+        List<CartItem> cartItems = cartItemsRepository.findAllByUserId(userId);
         BigDecimal total = BigDecimal.ZERO;
 
         for (CartItem cartItem : cartItems) {
@@ -117,6 +110,7 @@ public class CartService {
 
         return total;
     }
+
 
     /**
      * Remove from cart.

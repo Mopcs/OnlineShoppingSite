@@ -44,6 +44,11 @@ public class Product {
     @JoinColumn(name = "user_id")
     private int userId;
 
+    public Product()
+    {
+
+    }
+
     /**
      * Sets size.
      *

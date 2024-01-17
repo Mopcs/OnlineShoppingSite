@@ -6,10 +6,13 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import javax.persistence.Column;
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
-    Optional<Product> findByName(String name);
 
+    List<Product> findByName(String name);
+
+    List<Product> findByGender(String gender);
     Optional<Integer> findProductIdByUserId(int userId);
 }
