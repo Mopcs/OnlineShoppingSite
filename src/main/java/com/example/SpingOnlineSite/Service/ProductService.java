@@ -4,13 +4,11 @@ import com.example.SpingOnlineSite.Entity.Product;
 import com.example.SpingOnlineSite.Entity.User;
 import com.example.SpingOnlineSite.Repository.ProductRepository;
 import com.example.SpingOnlineSite.Repository.UserRepository;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The type Product service.
@@ -20,20 +18,12 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    private final JPAQueryFactory queryFactory;
     private final UserRepository userRepository;
 
-    /**
-     * Instantiates a new Product service.
-     *
-     * @param productRepository the product repository
-     * @param userRepository    the user repository
-     */
     @Autowired
-    public ProductService(ProductRepository productRepository, UserRepository userRepository, JPAQueryFactory queryFactory) {
+    public ProductService(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
-        this.queryFactory = queryFactory;
     }
 
     /**
@@ -54,6 +44,11 @@ public class ProductService {
     public Product getProductById(int productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Продукт не найден по id: " + productId));
+    }
+
+
+    public List<Product> searchProducts(String size, String category, String name, String productType, String condition, String color) {
+       return productRepository.search(size,category,name,productType,condition,color);
     }
 
     /**
@@ -116,9 +111,6 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public List<Product> getProductsByGender(String gender) {
-        return productRepository.findByGender(gender);
-    }
 
     /**
      * Find product by name optional.

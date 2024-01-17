@@ -6,6 +6,7 @@ import com.example.SpingOnlineSite.Service.UserService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,6 +78,16 @@ public class ProductController {
         return ResponseEntity.ok(productId);
     }
 
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam(name = "size", required = false) String size,
+                                        @RequestParam(name = "category", required = false) String category,
+                                        @RequestParam(name = "name", required = false) String name,
+                                        @RequestParam(name = "productType", required = false) String productType,
+                                        @RequestParam(name = "condition", required = false) String condition,
+                                        @RequestParam(name = "color", required = false) String color) {
+        return productService.searchProducts(size, category, name, productType, condition, color);
+    }
+
     /**
      * Update product product.
      *
@@ -110,9 +121,4 @@ public class ProductController {
         return productService.findProductByName(productName);
     }
 
-    @GetMapping("/findProductsByGender/gender={gender}")
-    public List<Product> findProductsByGender(@PathVariable String gender)
-    {
-        return productService.getProductsByGender(gender);
-    }
 }
