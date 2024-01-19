@@ -9,9 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-/**
- * The type User.
- */
 @Getter
 @Entity
 @AllArgsConstructor
@@ -60,90 +57,40 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    /**
-     * Sets updated at.
-     *
-     * @param updatedAt the updated at
-     */
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    /**
-     * Sets created at.
-     *
-     * @param createdAt the created at
-     */
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    /**
-     * Sets user id.
-     *
-     * @param userId the user id
-     */
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    /**
-     * Sets username.
-     *
-     * @param username the username
-     */
     public void setUsername(String username) {
         this.username = username;
     }
 
-    /**
-     * Sets patronymic.
-     *
-     * @param patronymic the patronymic
-     */
     public void setPatronymic(String patronymic) { this.patronymic = patronymic;}
 
-    /**
-     * Sets email.
-     *
-     * @param email the email
-     */
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-     * Sets password.
-     *
-     * @param password the password
-     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /**
-     * Sets surname.
-     *
-     * @param surname the surname
-     */
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
-    /**
-     * Sets gender.
-     *
-     * @param gender the gender
-     */
     public void setGender(String gender) {
         this.gender = gender;
     }
 
-    /**
-     * Sets phone number.
-     *
-     * @param phoneNumber the phone number
-     */
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }

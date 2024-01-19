@@ -14,52 +14,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * The type User controller.
- */
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
-    /**
-     * Instantiates a new User controller.
-     *
-     * @param userService the user service
-     */
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    /**
-     * Gets all users.
-     *
-     * @return the all users
-     */
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    /**
-     * Gets user by id.
-     *
-     * @param userId the user id
-     * @return the user by id
-     */
     @GetMapping("/getUserById/userId={userId}")
     public User getUserById(@PathVariable int userId) {
         return userService.getUserById(userId);
     }
 
-    /**
-     * Register user user.
-     *
-     * @param user the user
-     * @return the user
-     */
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
@@ -71,58 +46,28 @@ public class UserController {
         }
     }
 
-    /**
-     * Login user response entity.
-     *
-     * @param loginRequest the login request
-     * @return the response entity
-     */
     @PostMapping("/login")
     public ResponseEntity<User> loginUser(@RequestBody LoginRequest loginRequest) {
         Optional<User> user = userService.loginUser(loginRequest);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /**
-     * Update user user.
-     *
-     * @param userId the user id
-     * @param user   the user
-     * @return the user
-     */
     @PutMapping("/update/userId={userId}")
     public User updateUser(@PathVariable int userId, @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
 
-    /**
-     * Delete user.
-     *
-     * @param userId the user id
-     */
     @DeleteMapping("/deleteUserById/userId={userId}")
     public void deleteUser(@PathVariable int userId) {
         userService.deleteUser(userId);
     }
 
-    /**
-     * Find by username response entity.
-     *
-     * @param username the username
-     * @return the response entity
-     */
     @GetMapping("/findByUsername/username={username}")
     public ResponseEntity<User> findByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /**
-     * Gets user id by phone number.
-     *
-     * @param phoneNumber the phone number
-     * @return the user id by phone number
-     */
     @PostMapping("/getUserIdByPhoneNumber/phoneNumber={phoneNumber}")
     public ResponseEntity<Map<String, Integer>> getUserIdByPhoneNumber(@PathVariable String phoneNumber) {
         Integer userId = userService.getUserIdByPhoneNumber(phoneNumber);
@@ -133,12 +78,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Gets user by phone number.
-     *
-     * @param phoneNumber the phone number
-     * @return the user by phone number
-     */
     @GetMapping("/getUserByPhoneNumber/phoneNumber={phoneNumber}")
     public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber)
     {
@@ -146,24 +85,12 @@ public class UserController {
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /**
-     * Find by email response entity.
-     *
-     * @param email the email
-     * @return the response entity
-     */
     @GetMapping("/findByEmail/email={email}")
     public ResponseEntity<User> findByEmail(@PathVariable String email) {
         Optional<User> user = userService.findByEmail(email);
         return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    /**
-     * Find by gender response entity.
-     *
-     * @param gender the gender
-     * @return the response entity
-     */
     @GetMapping("/findByGender/gender={gender}")
     public ResponseEntity<User> findByGender(@PathVariable String gender) {
         Optional<User> user = userService.findByGender(gender);

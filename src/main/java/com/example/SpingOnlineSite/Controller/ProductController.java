@@ -5,16 +5,16 @@ import com.example.SpingOnlineSite.Service.ProductService;
 import com.example.SpingOnlineSite.Service.UserService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * The type Product controller.
- */
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/products")
@@ -22,55 +22,32 @@ public class ProductController {
 
     private final ProductService productService;
 
-    /**
-     * Instantiates a new Product controller.
-     *
-     * @param productService the product service
-     */
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    /**
-     * Gets all products.
-     *
-     * @return the all products
-     */
     @PostMapping("/getAllProducts")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    /**
-     * Gets product by id.
-     *
-     * @param productId the product id
-     * @return the product by id
-     */
+    @PostMapping("/getIdByProductName/productName={productName}")
+    public Integer getId(@PathVariable String productName)
+    {
+        return productService.getIdByName(productName);
+    }
+
     @PostMapping("/getProductById/productId={productId}")
     public Product getProductById(@PathVariable int productId) {
         return productService.getProductById(productId);
     }
 
-    /**
-     * Create product product.
-     *
-     * @param product the product
-     * @param userId  the user id
-     * @return the product
-     */
     @PostMapping("/createProduct/userId={userId}")
     public Product createProduct(@RequestBody Product product, @PathVariable int userId) {
         return productService.createProduct(product, userId);
     }
 
-    /**
-     * Find product id by user id response entity.
-     *
-     * @param userId the user id
-     * @return the response entity
-     */
     @PostMapping("/getProductIdByUserId/userId={userId}")
     public ResponseEntity<Integer> findProductIdByUserId(@PathVariable int userId)
     {
@@ -78,47 +55,37 @@ public class ProductController {
         return ResponseEntity.ok(productId);
     }
 
-    @GetMapping("/search")
-    public List<Product> searchProducts(@RequestParam(name = "size", required = false) String size,
-                                        @RequestParam(name = "category", required = false) String category,
-                                        @RequestParam(name = "name", required = false) String name,
-                                        @RequestParam(name = "productType", required = false) String productType,
-                                        @RequestParam(name = "condition", required = false) String condition,
-                                        @RequestParam(name = "color", required = false) String color) {
-        return productService.searchProducts(size, category, name, productType, condition, color);
+    @PostMapping("/getAcceptedProducts")
+    public List<Product> getAcceptedProducts()
+    {
+        return productService.getAcceptedProducts();
     }
 
-    /**
-     * Update product product.
-     *
-     * @param productId the product id
-     * @param product   the product
-     * @return the product
-     */
+    @PostMapping("/search")
+    public List<Product> searchProducts(
+            @RequestParam(name = "size", required = false) String size,
+            @RequestParam(name = "category", required = false) String category,
+            @RequestParam(name = "productType", required = false) String productType,
+            @RequestParam(name = "condition", required = false) String condition,
+            @RequestParam(name = "chapter", required = false) String chapter,
+            @RequestParam(name = "color", required = false) String color,
+            @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice
+    ) {
+        return productService.searchProducts(size, category, productType, condition, chapter, color, minPrice, maxPrice);
+    }
     @PutMapping("/updateProduct/productId={productId}")
     public Product updateProduct(@PathVariable int productId, @RequestBody Product product) {
         return productService.updateProduct(productId, product);
     }
 
-    /**
-     * Delete product.
-     *
-     * @param productId the product id
-     */
     @DeleteMapping("/deleteProduct/productId={productId}")
     public void deleteProduct(@PathVariable int productId) {
         productService.deleteProduct(productId);
     }
 
-    /**
-     * Find product by name response entity.
-     *
-     * @param productName the product name
-     * @return the response entity
-     */
-    @GetMapping("/findProductsByName/productName={productName}")
-    public List<Product> findProductByName(@PathVariable String productName) {
-        return productService.findProductByName(productName);
+    @PostMapping("/getAllProductsNames")
+    public List<String> findProductByName() {
+        return productService.getAllProductNames();
     }
-
 }

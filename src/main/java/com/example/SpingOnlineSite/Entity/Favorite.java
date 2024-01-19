@@ -7,9 +7,6 @@ import lombok.Setter;
 import javax.persistence.*;
 
 
-/**
- * The type Favorite.
- */
 @Getter
 @Setter
 @Entity
